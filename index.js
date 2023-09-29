@@ -6,6 +6,14 @@ require('dotenv').config()
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD);
 
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
+
+app.use(express.json());
+
 mongoose
     .connect(
         `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.4vlbiwo.mongodb.net/?retryWrites=true&w=majority`
