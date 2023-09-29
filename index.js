@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-require('dotenv').config()
+require('dotenv').config();
+const productsRoutes = require('./routes/productsRoutes');
 
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = encodeURIComponent(process.env.DB_PASSWORD);
@@ -13,6 +14,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use('/products', productsRoutes);
 
 mongoose.Promise = global.Promise;
 mongoose
