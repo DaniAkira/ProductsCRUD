@@ -14,6 +14,7 @@ app.use(
 
 app.use(express.json());
 
+mongoose.Promise = global.Promise;
 mongoose
     .connect(
         `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.4vlbiwo.mongodb.net/?retryWrites=true&w=majority`
@@ -23,5 +24,5 @@ mongoose
         app.listen(8080);
     })
     .catch((err) => {
-        console.log(err);
+        console.log(`Houve um erro ao se conectar ao MongoDB. ${err}`);
     });
