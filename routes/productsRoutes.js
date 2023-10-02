@@ -12,6 +12,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const targetRecord = await Products.findOne({_id:id});
+
+    if(!targetRecord) {
+      res.status(422).json({message: `Produto não encontrado.`});
+    }else {
+      res.status(200).json(targetRecord);
+    }
+  } catch (error) {
+      res.status(500).json({ error: error });
+    return
+  }
+});
+
 router.post("/", async (req, res) => {
   const { name, price, size, stockAmount, brand, type, sale } = req.body;
 
