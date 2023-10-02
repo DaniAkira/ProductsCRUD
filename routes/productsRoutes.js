@@ -8,105 +8,133 @@ router.get("/", async (req, res) => {
     res.status(200).json(allRecords);
   } catch (error) {
     res.status(500).json({ error: error });
-    return
+    return;
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const targetRecord = await Products.findOne({_id:id});
+    const targetRecord = await Products.findOne({ _id: id });
 
-    if(!targetRecord) {
-      res.status(422).json({message: `Produto não encontrado.`});
-    }else {
+    if (!targetRecord) {
+      res.status(422).json({ message: `Produto não encontrado.` });
+    } else {
       res.status(200).json(targetRecord);
     }
   } catch (error) {
-      res.status(500).json({ error: error });
-    return
+    res.status(500).json({ error: error });
+    return;
   }
 });
 
 router.post("/", async (req, res) => {
   const { name, price, size, stockAmount, brand, type, sale } = req.body;
 
-  if(!name || !price || !brand) {
-    res.status(422).json({error: `Nome, preço e marca são obrigatórios para cadastro de produto.`});
-  }else {
+  if (!name || !price || !brand) {
+    res
+      .status(422)
+      .json({
+        error: `Nome, preço e marca são obrigatórios para cadastro de produto.`,
+      });
+  } else {
     const product = {
-        name,
-        price,
-        size,
-        stockAmount,
-        brand,
-        type,
-        sale,
+      name,
+      price,
+      size,
+      stockAmount,
+      brand,
+      type,
+      sale,
     };
 
     try {
-        await Products.create(product);
+      await Products.create(product);
 
-        res.status(201).json({mensagem: `Produto registrado com sucesso!`});
+      res.status(201).json({ mensagem: `Produto registrado com sucesso!` });
     } catch (error) {
-        res.status(500).json({ error: error });
-        return
+      res.status(500).json({ error: error });
+      return;
     }
   }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch("/:id", async (req, res) => {
   const productId = req.params.id;
-  
+
   const { name, price, size, stockAmount, brand, type, sale } = req.body;
 
   try {
-    
-    const targetProduct = await Products.findOne({_id: productId});
+    const targetProduct = await Products.findOne({ _id: productId });
 
     const editedProduct = {
-          name,
-          price,
-          size,
-          stockAmount,
-          brand,
-          type,
-          sale,
+      name,
+      price,
+      size,
+      stockAmount,
+      brand,
+      type,
+      sale,
     };
-  
-    if(targetProduct.name === editedProduct.name && 
+
+    if (
+      targetProduct.name === editedProduct.name &&
       targetProduct.price === editedProduct.price &&
       targetProduct.size === editedProduct.size &&
       targetProduct.stockAmount === editedProduct.stockAmount &&
       targetProduct.brand === editedProduct.brand &&
       targetProduct.type === editedProduct.type &&
-      targetProduct.sale === editedProduct.sale) {
-        res.status(400).json({ error: "Produto não foi alterado, parâmetros iguais." });
-      } else {
-        try {
-          
-          const updatedProduct = await Products.updateOne({_id: productId}, editedProduct);
+      targetProduct.sale === editedProduct.sale
+    ) {
+      res
+        .status(400)
+        .json({ error: "Produto não foi alterado, parâmetros iguais." });
+    } else {
+      try {
+        const updatedProduct = await Products.updateOne(
+          { _id: productId },
+          editedProduct
+        );
 
-          if(updatedProduct.matchedCount === 0) {
-            res.status(422).json({ error: "Peroduto não foi encontrado!" });
-            return
-          }
-          res.status(200).json(editedProduct);
-  
-        } catch (error) {
-          res.status(500).json({ error: error });
-          return
+        if (updatedProduct.matchedCount === 0) {
+          res.status(422).json({ error: "Peroduto não foi encontrado!" });
+          return;
         }
+        res.status(200).json(editedProduct);
+      } catch (error) {
+        res.status(500).json({ error: error });
+        return;
       }
-
+    }
   } catch (error) {
     res.status(422).json({ error: "Produto não encontrado" });
-    return
+    return;
   }
-
-
 });
 
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
 
-module.exports = router
+  try {
+    const targetRecord = await Products.findOne({ _id: id });
+
+    if (!targetRecord) {
+      res.status(422).json({ message: `Produto não encontrado.` });
+    } else {
+      try {
+        await Products.deleteOne({_id: id});
+        
+        res.status(200).json({message: `Produto removido com sucesso.`})
+      } catch (error) {
+        res.status(500).json({ error: error });
+        return
+      }
+    }
+  } catch (error) {
+    res.status(422).json({ message: `Produto não encontrado.` });
+    return;
+  }
+});
+
+module.exports = router;
