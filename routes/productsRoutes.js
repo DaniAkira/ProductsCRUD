@@ -137,4 +137,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.get('/filter/sales', async (req, res) => {
+  try {
+    const query = {sale: true};
+    const toReturn = {name: 1, price: 1, stockAmount: 1}
+    
+    const salesProducts = await Products.find(query, toReturn).exec();
+    if(salesProducts.length === 0) {
+      res.status(200).json({message: `Não existem produtos em promoção.`})
+    } else {
+      res.status(200).json(salesProducts);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error });
+        return
+  }
+});
+
+
+
 module.exports = router;
