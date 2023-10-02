@@ -140,7 +140,7 @@ router.delete("/:id", async (req, res) => {
 router.get('/filter/sales', async (req, res) => {
   try {
     const query = {sale: true};
-    const toReturn = {name: 1, price: 1, stockAmount: 1}
+    const toReturn = {id: 1, name: 1, price: 1, stockAmount: 1}
     
     const salesProducts = await Products.find(query, toReturn).exec();
     if(salesProducts.length === 0) {
@@ -154,6 +154,21 @@ router.get('/filter/sales', async (req, res) => {
   }
 });
 
-
+router.get('/filter/tshirts', async (req, res) => {
+  try {
+    const query = {type: "Camisetas"};
+    const toReturn = {_id: 1, name: 1, price: 1, stockAmount: 1, type: 1}
+    
+    const tshirtProducts = await Products.find(query, toReturn).exec();
+    if(tshirtProducts.length === 0) {
+      res.status(200).json({message: `Não existem produtos em promoção.`})
+    } else {
+      res.status(200).json(tshirtProducts);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error });
+        return
+  }
+});
 
 module.exports = router;
