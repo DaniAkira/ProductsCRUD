@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Products = require("../models/Product");
-
+const {validateUpdateProductsData} = require('../service/service');
 
 
 router.get("/", async (req, res) => {
@@ -80,15 +80,22 @@ router.patch("/:id", async (req, res) => {
       sale,
     };
 
-    if (
-      targetProduct.name === editedProduct.name &&
-      targetProduct.price === editedProduct.price &&
-      targetProduct.size === editedProduct.size &&
-      targetProduct.stockAmount === editedProduct.stockAmount &&
-      targetProduct.brand === editedProduct.brand &&
-      targetProduct.type === editedProduct.type &&
-      targetProduct.sale === editedProduct.sale
-    ) {
+    if (!validateUpdateProductsData(
+      targetProduct.name,
+      targetProduct.price,
+      targetProduct.size,
+      targetProduct.stockAmount,
+      targetProduct.brand,
+      targetProduct.type,
+      targetProduct.sale,
+      editedProduct.name,
+      editedProduct.price,
+      editedProduct.size,
+      editedProduct.stockAmount,
+      editedProduct.brand,
+      editedProduct.type,
+      editedProduct.sale
+    )) {
       res
         .status(400)
         .json({ error: "Produto não foi alterado, parâmetros iguais." });
