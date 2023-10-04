@@ -90,26 +90,17 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
-
-  try {
-    const targetProduct = await findOneProduct(id);
-
-    if (!targetProduct) {
-      res.status(422).json({ message: `Produto não encontrado.` });
-    } else {
-      try {
-        await deleteOneProduct(id);
-
-        res.status(200).json({ message: `Produto removido com sucesso.` });
-      } catch (error) {
-        res.status(500).json({ error: error });
-        return;
-      }
-    }
-  } catch (error) {
+  if(!(await validateIfProductsExists(id))) {
     res.status(422).json({ message: `Produto não encontrado.` });
-    return;
-  }
-});
+  } else {
+    try {
+      await deleteOneProduct(id);
+
+      res.status(200).json({ message: `Produto removido com sucesso.` });
+    } catch (error) {
+      res.status(500).json({ error: error });
+      return;
+    }
+}});
 
 module.exports = router;
