@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
     for (let i = 0; i < brands.length; i++) {
       const query = { brand: brands[i] };
       const toReturn = { id: 1, name: 1, price: 1, stockAmount: 1 };
+      
       try {
         const allProductsOfOneBrand = await Products.find(query, toReturn);
         searchedProducts.push(...allProductsOfOneBrand);

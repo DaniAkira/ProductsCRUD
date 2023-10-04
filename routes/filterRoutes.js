@@ -6,7 +6,7 @@ router.get('/sales', async (req, res) => {
       const query = {sale: true};
       const toReturn = {id: 1, name: 1, price: 1, stockAmount: 1}
       
-      const salesProducts = await Products.find(query, toReturn).exec();
+      const salesProducts = await Products.find(query, toReturn);
       if(salesProducts.length === 0) {
         res.status(200).json({message: `Não existem produtos em promoção.`})
       } else {
@@ -23,7 +23,7 @@ router.get('/sales', async (req, res) => {
       const query = {type: "Camisetas"};
       const toReturn = {_id: 1, name: 1, price: 1, stockAmount: 1, type: 1}
       
-      const tshirtProducts = await Products.find(query, toReturn).exec();
+      const tshirtProducts = await Products.find(query, toReturn);
       if(tshirtProducts.length === 0) {
         res.status(200).json({message: `Não foram encontradas camisetas.`})
       } else {
@@ -40,7 +40,7 @@ router.get('/sales', async (req, res) => {
       const query = {type: "Shorts"};
       const toReturn = {_id: 1, name: 1, price: 1, stockAmount: 1, type: 1}
       
-      const shortsProducts = await Products.find(query, toReturn).exec();
+      const shortsProducts = await Products.find(query, toReturn);
       if(shortsProducts.length === 0) {
         res.status(200).json({message: `Não foram encontrados Shorts.`})
       } else {

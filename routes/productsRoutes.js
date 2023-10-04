@@ -1,13 +1,16 @@
 const router = require("express").Router();
 const {
-  validateProductsDataToUpdate,
-  validateIfProductsExists,
+  validateProductDataToUpdate,
+  validateIfProductExists,
+} = require("../services/validateServices");
+
+const {
   findOneProduct,
   findAllProducts,
   createOneProduct,
   deleteOneProduct,
   updateOneProduct,
-} = require("../service/service");
+} = require("../services/service");
 
 router.get("/", async (req, res) => {
   try {
@@ -23,7 +26,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
-  if(!(await validateIfProductsExists(id))) {
+  if (!(await validateIfProductExists(id))) {
     res.status(422).json({ message: `Produto não encontrado.` });
   } else {
     const targetRecord = await findOneProduct(id);
@@ -72,15 +75,15 @@ router.patch("/:id", async (req, res) => {
     type,
     sale,
   };
-  
-  if(await validateIfProductsExists(productId)) {
-    if (!(await validateProductsDataToUpdate(productId, editedProduct))) {
+
+  if (await validateIfProductExists(productId)) {
+    if (!(await validateProductDataToUpdate(productId, editedProduct))) {
       res
         .status(400)
         .json({ error: "Produto não foi alterado, parâmetros iguais." });
     } else {
       const updatedProduct = await updateOneProduct(productId, editedProduct);
-      
+
       res.status(200).json(updatedProduct);
     }
   } else {
@@ -90,7 +93,7 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
-  if(!(await validateIfProductsExists(id))) {
+  if (!(await validateIfProductExists(id))) {
     res.status(422).json({ message: `Produto não encontrado.` });
   } else {
     try {
@@ -101,6 +104,7 @@ router.delete("/:id", async (req, res) => {
       res.status(500).json({ error: error });
       return;
     }
-}});
+  }
+});
 
 module.exports = router;

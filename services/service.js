@@ -25,18 +25,16 @@ const updateOneProduct = async (id, editedProduct) => {
   return updatedProduct;
 };
 
-const validateIfProductsExists = async (id) => {
+const validateIfProductExists = async (id) => {
   try {
     const targetProduct = await Products.findOne({ _id: id });
-    if (targetProduct) {
-      return true;
-    } else return false;
+    return targetProduct ? true : false;
   } catch (error) {
     return false;
   }
 };
 
-const validateProductsDataToUpdate = async (id, editedProduct) => {
+const validateProductDataToUpdate = async (id, editedProduct) => {
   const targetProduct = await Products.findOne({ _id: id });
   if (
     targetProduct.name === editedProduct.name &&
@@ -51,9 +49,8 @@ const validateProductsDataToUpdate = async (id, editedProduct) => {
   } else return true;
 };
 
+
 module.exports = {
-  validateProductsDataToUpdate,
-  validateIfProductsExists,
   findOneProduct,
   findAllProducts,
   createOneProduct,
