@@ -1,30 +1,26 @@
-const validateUpdateProductsData = (
-  targetProductName,
-  targetProductPrice,
-  targetProductSize,
-  targetProductStockAmount,
-  targetProductBrand,
-  targetProductType,
-  targetProductSale,
-  editedProductName,
-  editedProductPrice,
-  editedProductSize,
-  editedProductStockAmount,
-  editedProductBrand,
-  editedProductType,
-  editedProductSale
-) => {
+const Products = require('../models/Product');
+
+const validateProductsData = async (id, editedProduct) => {
+  try {
+    const targetProduct = await Products.findOne({_id: id});
+    console.log(`Target Product: ${targetProduct.price}`);
+    console.log(`Edited Product: ${editedProduct}`);
+    console.log(`Edited name: ${editedProduct.price}`);
     if(
-        targetProductName === editedProductName &&
-        targetProductPrice === editedProductPrice &&
-        targetProductSize === editedProductSize &&
-        targetProductStockAmount === editedProductStockAmount &&
-        targetProductBrand === editedProductBrand &&
-        targetProductType === editedProductType &&
-        targetProductSale === editedProductSale) {
-            return false
-        } else return true
+      targetProduct.name !== editedProduct.name ||
+      targetProduct.price !== editedProduct.price ||
+      targetProduct.size !== editedProduct.size ||
+      targetProduct.stockAmount !== editedProduct.stockAmount ||
+      targetProduct.brand !== editedProduct.brand ||
+      targetProduct.type !== editedProduct.type ||
+      targetProduct.sale !== editedProduct.sale) {
+        return true;
+      } else return false;
+  } catch (error) {
+     console.log(error);
+        return;
+  }
 };
 
 
-module.exports = validateUpdateProductsData;
+module.exports = validateProductsData;

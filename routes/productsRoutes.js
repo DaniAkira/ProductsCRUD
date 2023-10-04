@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Products = require("../models/Product");
-const {validateUpdateProductsData} = require('../service/service');
+const validateProductsData = require('../service/service');
 
 
 router.get("/", async (req, res) => {
@@ -64,38 +64,19 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   const productId = req.params.id;
-
   const { name, price, size, stockAmount, brand, type, sale } = req.body;
-
+  const editedProduct = {
+    name,
+    price,
+    size,
+    stockAmount,
+    brand,
+    type,
+    sale,
+  };
+  
   try {
-    const targetProduct = await Products.findOne({ _id: productId });
-
-    const editedProduct = {
-      name,
-      price,
-      size,
-      stockAmount,
-      brand,
-      type,
-      sale,
-    };
-
-    if (!validateUpdateProductsData(
-      targetProduct.name,
-      targetProduct.price,
-      targetProduct.size,
-      targetProduct.stockAmount,
-      targetProduct.brand,
-      targetProduct.type,
-      targetProduct.sale,
-      editedProduct.name,
-      editedProduct.price,
-      editedProduct.size,
-      editedProduct.stockAmount,
-      editedProduct.brand,
-      editedProduct.type,
-      editedProduct.sale
-    )) {
+    if (!(await validateProductsData(productId, editedProduct))) {
       res
         .status(400)
         .json({ error: "Produto não foi alterado, parâmetros iguais." });
@@ -105,7 +86,7 @@ router.patch("/:id", async (req, res) => {
           { _id: productId },
           editedProduct
         );
-
+  
         if (updatedProduct.matchedCount === 0) {
           res.status(422).json({ error: "Peroduto não foi encontrado!" });
           return;
@@ -117,8 +98,7 @@ router.patch("/:id", async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(422).json({ error: "Produto não encontrado" });
-    return;
+    res.status(500).json({ error: error });
   }
 });
 

@@ -1,16 +1,6 @@
 const router = require("express").Router();
 const Products = require("../models/Product");
 
-router.get('/marca', (req, res) => {
-  const brand = req.query.brand;
-  if(brand) {
-    console.log(brand);
-    console.log(typeof(brand));
-    res.status(200).json(brand)
-  }
-});
-
-
 router.get('/sales', async (req, res) => {
     try {
       const query = {sale: true};
