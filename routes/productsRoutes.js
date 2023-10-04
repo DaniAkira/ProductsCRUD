@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const Products = require("../models/Product");
 const {
   validateProductsDataToUpdate,
   validateIfProductsExists,
@@ -24,17 +23,11 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
-  try {
+  if(!(await validateIfProductsExists(id))) {
+    res.status(422).json({ message: `Produto não encontrado.` });
+  } else {
     const targetRecord = await findOneProduct(id);
-
-    if (!targetRecord) {
-      res.status(422).json({ message: `Produto não encontrado.` });
-    } else {
-      res.status(200).json(targetRecord);
-    }
-  } catch (error) {
-    res.status(500).json({ error: error });
-    return;
+    res.status(200).json(targetRecord);
   }
 });
 
