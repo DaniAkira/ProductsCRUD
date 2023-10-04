@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const Products = require("../models/Product");
-const validateProductsData = require('../service/service');
-
+const { validateProductsDataToUpdate, findOneProduct } = require('../service/service');
 
 router.get("/", async (req, res) => {
   try {
@@ -18,7 +17,7 @@ router.get("/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const targetRecord = await Products.findOne({ _id: id });
+    const targetRecord = await findOneProduct(id);
 
     if (!targetRecord) {
       res.status(422).json({ message: `Produto não encontrado.` });
@@ -76,7 +75,7 @@ router.patch("/:id", async (req, res) => {
   };
   
   try {
-    if (!(await validateProductsData(productId, editedProduct))) {
+    if (!(await validateProductsDataToUpdate(productId, editedProduct))) {
       res
         .status(400)
         .json({ error: "Produto não foi alterado, parâmetros iguais." });
@@ -106,7 +105,7 @@ router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const targetRecord = await Products.findOne({ _id: id });
+    const targetRecord = await findOneProduct(id);
 
     if (!targetRecord) {
       res.status(422).json({ message: `Produto não encontrado.` });

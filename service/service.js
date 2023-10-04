@@ -1,11 +1,13 @@
 const Products = require('../models/Product');
 
-const validateProductsData = async (id, editedProduct) => {
+const findOneProduct = async (id) => {
+  const productSearched = await Products.findOne({_id: id});
+  return productSearched;
+};
+
+const validateProductsDataToUpdate = async (id, editedProduct) => {
   try {
     const targetProduct = await Products.findOne({_id: id});
-    console.log(`Target Product: ${targetProduct.price}`);
-    console.log(`Edited Product: ${editedProduct}`);
-    console.log(`Edited name: ${editedProduct.price}`);
     if(
       targetProduct.name !== editedProduct.name ||
       targetProduct.price !== editedProduct.price ||
@@ -23,4 +25,4 @@ const validateProductsData = async (id, editedProduct) => {
 };
 
 
-module.exports = validateProductsData;
+module.exports = { validateProductsDataToUpdate, findOneProduct };
