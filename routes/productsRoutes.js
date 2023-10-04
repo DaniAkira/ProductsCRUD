@@ -2,9 +2,12 @@ const router = require("express").Router();
 const Products = require("../models/Product");
 const {
   validateProductsDataToUpdate,
+  validateIfProductsExists,
   findOneProduct,
   findAllProducts,
-  createProduct,
+  createOneProduct,
+  deleteOneProduct,
+  updateOneProduct,
 } = require("../service/service");
 
 router.get("/", async (req, res) => {
@@ -54,7 +57,7 @@ router.post("/", async (req, res) => {
     };
 
     try {
-      await createProduct(product);
+      await createOneProduct(product);
 
       res.status(201).json({ mensagem: `Produto registrado com sucesso!` });
     } catch (error) {
@@ -76,31 +79,19 @@ router.patch("/:id", async (req, res) => {
     type,
     sale,
   };
-
-  try {
+  
+  if(await validateIfProductsExists(productId)) {
     if (!(await validateProductsDataToUpdate(productId, editedProduct))) {
       res
         .status(400)
         .json({ error: "Produto não foi alterado, parâmetros iguais." });
     } else {
-      try {
-        const updatedProduct = await Products.updateOne(
-          { _id: productId },
-          editedProduct
-        );
-
-        if (updatedProduct.matchedCount === 0) {
-          res.status(422).json({ error: "Peroduto não foi encontrado!" });
-          return;
-        }
-        res.status(200).json(editedProduct);
-      } catch (error) {
-        res.status(500).json({ error: error });
-        return;
-      }
+      const updatedProduct = await updateOneProduct(productId, editedProduct);
+      
+      res.status(200).json(updatedProduct);
     }
-  } catch (error) {
-    res.status(500).json({ error: error });
+  } else {
+    res.status(422).json({ error: "Produto não foi encontrado!" });
   }
 });
 
@@ -108,13 +99,13 @@ router.delete("/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
-    const targetRecord = await findOneProduct(id);
+    const targetProduct = await findOneProduct(id);
 
-    if (!targetRecord) {
+    if (!targetProduct) {
       res.status(422).json({ message: `Produto não encontrado.` });
     } else {
       try {
-        await Products.deleteOne({ _id: id });
+        await deleteOneProduct(id);
 
         res.status(200).json({ message: `Produto removido com sucesso.` });
       } catch (error) {
