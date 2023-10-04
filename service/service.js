@@ -5,6 +5,21 @@ const findOneProduct = async (id) => {
   return productSearched;
 };
 
+const findAllProducts = async () => {
+  const allProducts = await Products.find();
+  return allProducts;
+};
+
+const createProduct = async (product) => {
+  try {
+    await Products.create(product);
+  } catch (error) {
+    console.log(error);
+    return error
+  }
+  
+};
+
 const validateProductsDataToUpdate = async (id, editedProduct) => {
   try {
     const targetProduct = await Products.findOne({_id: id});
@@ -25,4 +40,9 @@ const validateProductsDataToUpdate = async (id, editedProduct) => {
 };
 
 
-module.exports = { validateProductsDataToUpdate, findOneProduct };
+module.exports = {
+  validateProductsDataToUpdate,
+  findOneProduct,
+  findAllProducts,
+  createProduct
+};
