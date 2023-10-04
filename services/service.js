@@ -10,6 +10,39 @@ const findAllProducts = async () => {
   return allProducts;
 };
 
+const filterProductsByBrands = async (brands) => {
+  let searchedProducts = [];
+  if (typeof brands === "string") {
+    const query = { brand: brands };
+    const toReturn = { id: 1, name: 1, price: 1, stockAmount: 1 };
+
+    try {
+      searchedProducts = await Products.find(query, toReturn);
+      console.warn(`SEARCHED PRODUCTS DENTRO DA FUNÇÃO ${searchedProducts}`);
+      return searchedProducts.length === 0 ? false : searchedProducts;
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  } else {
+    for(let i = 0; i < brands.length; i++) {
+      const query = { brand: brands };
+      const toReturn = { id: 1, name: 1, price: 1, stockAmount: 1 };
+
+      try {
+        const allProductsOfOneBrand = await Products.find(query, toReturn);
+        searchedProducts.push(...allProductsOfOneBrand);
+
+        console.warn(`SEARCHED PRODUCTS DENTRO DA FUNÇÃO`);
+        return searchedProducts.length < 0 ? false : searchedProducts;
+      } catch (error) {
+        console.log(error)
+        return false
+      }
+    }
+  }
+};
+
 const createOneProduct = async (product) => {
   await Products.create(product);
 };
@@ -25,35 +58,11 @@ const updateOneProduct = async (id, editedProduct) => {
   return updatedProduct;
 };
 
-const validateIfProductExists = async (id) => {
-  try {
-    const targetProduct = await Products.findOne({ _id: id });
-    return targetProduct ? true : false;
-  } catch (error) {
-    return false;
-  }
-};
-
-const validateProductDataToUpdate = async (id, editedProduct) => {
-  const targetProduct = await Products.findOne({ _id: id });
-  if (
-    targetProduct.name === editedProduct.name &&
-    targetProduct.price === editedProduct.price &&
-    targetProduct.size === editedProduct.size &&
-    targetProduct.stockAmount === editedProduct.stockAmount &&
-    targetProduct.brand === editedProduct.brand &&
-    targetProduct.type === editedProduct.type &&
-    targetProduct.sale === editedProduct.sale
-  ) {
-    return false;
-  } else return true;
-};
-
-
 module.exports = {
   findOneProduct,
   findAllProducts,
   createOneProduct,
   deleteOneProduct,
   updateOneProduct,
+  filterProductsByBrands,
 };
