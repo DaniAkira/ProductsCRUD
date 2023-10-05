@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const Products = require("../models/Product");
 const { searchProductsDependingOnFilter } = require("../services/service");
 
 router.get("/sales", async (req, res) => {
