@@ -1,55 +1,38 @@
 const router = require("express").Router();
 const Products = require("../models/Product");
+const { searchProductsDependingOnFilter } = require("../services/service");
 
-router.get('/sales', async (req, res) => {
-    try {
-      const query = {sale: true};
-      const toReturn = {id: 1, name: 1, price: 1, stockAmount: 1}
-      
-      const salesProducts = await Products.find(query, toReturn);
-      if(salesProducts.length === 0) {
-        res.status(200).json({message: `Não existem produtos em promoção.`})
-      } else {
-        res.status(200).json(salesProducts);
-      }
-    } catch (error) {
-      res.status(500).json({ error: error });
-          return
-    }
-  });
-  
-  router.get('/tshirts', async (req, res) => {
-    try {
-      const query = {type: "Camisetas"};
-      const toReturn = {_id: 1, name: 1, price: 1, stockAmount: 1, type: 1}
-      
-      const tshirtProducts = await Products.find(query, toReturn);
-      if(tshirtProducts.length === 0) {
-        res.status(200).json({message: `Não foram encontradas camisetas.`})
-      } else {
-        res.status(200).json(tshirtProducts);
-      }
-    } catch (error) {
-      res.status(500).json({ error: error });
-          return
-    }
-  });
-  
-  router.get('/shorts', async (req, res) => {
-    try {
-      const query = {type: "Shorts"};
-      const toReturn = {_id: 1, name: 1, price: 1, stockAmount: 1, type: 1}
-      
-      const shortsProducts = await Products.find(query, toReturn);
-      if(shortsProducts.length === 0) {
-        res.status(200).json({message: `Não foram encontrados Shorts.`})
-      } else {
-        res.status(200).json(shortsProducts);
-      }
-    } catch (error) {
-      res.status(500).json({ error: error });
-          return
-    }
-  });
+router.get("/sales", async (req, res) => {
+  const query = { sale: true };
 
-  module.exports = router;
+  const salesProducts = await searchProductsDependingOnFilter(query);
+  if (!salesProducts) {
+    res.status(200).json({ message: `Não existem produtos em promoção.` });
+  } else {
+    res.status(200).json(salesProducts);
+  }
+});
+
+router.get("/tshirts", async (req, res) => {
+  const query = { type: "Camisetas" };
+
+  const tshirtProducts = await searchProductsDependingOnFilter(query);
+  if (!tshirtProducts) {
+    res.status(200).json({ message: `Não foram encontradas camisetas.` });
+  } else {
+    res.status(200).json(tshirtProducts);
+  }
+});
+
+router.get("/shorts", async (req, res) => {
+  const query = { type: "Shorts" };
+
+  const shortsProducts = await searchProductsDependingOnFilter(query);
+  if (!shortsProducts) {
+    res.status(200).json({ message: `Não foram encontrados Shorts.` });
+  } else {
+    res.status(200).json(shortsProducts);
+  }
+});
+
+module.exports = router;

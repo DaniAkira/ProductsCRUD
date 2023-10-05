@@ -18,7 +18,6 @@ const filterProductsByBrands = async (brands) => {
 
     try {
       searchedProducts = await Products.find(query, toReturn);
-      console.warn(`SEARCHED PRODUCTS DENTRO DA FUNÇÃO ${searchedProducts}`);
       return searchedProducts.length === 0 ? false : searchedProducts;
     } catch (error) {
       console.log(error)
@@ -33,13 +32,28 @@ const filterProductsByBrands = async (brands) => {
         const allProductsOfOneBrand = await Products.find(query, toReturn);
         searchedProducts.push(...allProductsOfOneBrand);
 
-        console.warn(`SEARCHED PRODUCTS DENTRO DA FUNÇÃO`);
         return searchedProducts.length < 0 ? false : searchedProducts;
       } catch (error) {
         console.log(error)
         return false
       }
     }
+  }
+};
+
+const searchProductsDependingOnFilter = async (query) => {
+  const toReturn = {id: 1, name: 1, price: 1, stockAmount: 1};
+  console.log(query);
+  try {
+    const foundProducts = await Products.find(
+      query,
+      toReturn
+    )
+    console.log(foundProducts)
+    return foundProducts;
+  } catch (error) {
+    console.log(error);
+    return false
   }
 };
 
@@ -65,4 +79,5 @@ module.exports = {
   deleteOneProduct,
   updateOneProduct,
   filterProductsByBrands,
+  searchProductsDependingOnFilter,
 };
