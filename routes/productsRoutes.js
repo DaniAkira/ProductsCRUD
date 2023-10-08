@@ -52,14 +52,14 @@ router.post("/", async (req, res) => {
       sale,
     };
 
-    try {
-      await createOneProduct(product);
+    const productCreated = await createOneProduct(product);
 
+    if(!productCreated) {
+      res.status(500).json({message: `Erro ao registrar produto`});
+    }else {
       res.status(201).json({ mensagem: `Produto registrado com sucesso!` });
-    } catch (error) {
-      res.status(500).json({ error: error });
-      return;
     }
+
   }
 });
 
@@ -96,14 +96,14 @@ router.delete("/:id", async (req, res) => {
   if (!(await validateIfProductExists(id))) {
     res.status(422).json({ message: `Produto não encontrado.` });
   } else {
-    try {
-      await deleteOneProduct(id);
+    const deletedProduct = await deleteOneProduct(id);
 
+    if(deletedProduct) {
       res.status(200).json({ message: `Produto removido com sucesso.` });
-    } catch (error) {
-      res.status(500).json({ error: error });
-      return;
+    } else {
+      res.status(500).json({message: `Erro ao deletar produto`});
     }
+
   }
 });
 

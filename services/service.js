@@ -43,7 +43,6 @@ const filterProductsByBrands = async (brands) => {
 
 const searchProductsDependingOnFilter = async (query) => {
   const toReturn = {id: 1, name: 1, price: 1, stockAmount: 1};
-  console.log(query);
   try {
     const foundProducts = await Products.find(
       query,
@@ -57,11 +56,24 @@ const searchProductsDependingOnFilter = async (query) => {
 };
 
 const createOneProduct = async (product) => {
-  await Products.create(product);
+  try {
+    await Products.create(product);
+    return product
+  } catch (error) {
+    console.log(error);
+    return false
+  }
 };
 
 const deleteOneProduct = async (id) => {
-  await Products.deleteOne({ _id: id });
+  try {
+    await Products.deleteOne({ _id: id });
+    
+    return true
+  } catch (error) {
+    console.log(error);
+    return false
+  }
 };
 
 const updateOneProduct = async (id, editedProduct) => {
