@@ -7,8 +7,6 @@ const {
 
 router.get("/", async (req, res) => {
   const brands = req.query.brand;
-  const objectBrand = req.query;
-  console.warn(objectBrand)
   const searchedProducts = await filterProductsByBrands(brands);
   if (brands.length === 0) {
     res.status(200).json({ message: `Selecione uma marca para buscar.` });

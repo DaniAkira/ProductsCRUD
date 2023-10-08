@@ -34,4 +34,15 @@ router.get("/shorts", async (req, res) => {
   }
 });
 
+router.get("/jackets", async (req, res) => {
+  const query = {type: "Jaquetas e agasalhos"};
+
+  const jacketsProducts = await searchProductsDependingOnFilter(query);
+  if(!jacketsProducts) {
+    res.status(200).json({ message: `Não foram encontrados Jaquetas e agasalhos.` });
+  } else {
+    res.status(200).json(jacketsProducts);
+  }
+})
+
 module.exports = router;

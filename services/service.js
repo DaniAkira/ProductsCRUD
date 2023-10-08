@@ -49,7 +49,6 @@ const searchProductsDependingOnFilter = async (query) => {
       query,
       toReturn
     )
-    console.log(foundProducts)
     return foundProducts;
   } catch (error) {
     console.log(error);
